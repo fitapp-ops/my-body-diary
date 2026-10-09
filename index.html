@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#142536" />
+  <title>My Body Diary · Umi Sportik</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{--navy:#142536;--ink:#172838;--muted:#7b8994;--orange:#d88c5d;--orange2:#f4c7a8;--bg:#f7f6f3;--card:#fff;--line:#eae8e3;--mint:#e5f2ec;--pink:#fff0ef;--radius:22px}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg)}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:default}
+    .app{max-width:680px;margin:0 auto;min-height:100dvh;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+    header{background:linear-gradient(130deg,#162a3d,#0c1926);color:#fff;padding:28px 20px 26px;border-radius:0 0 28px 28px;position:relative;overflow:hidden}
+    header:before{content:"";position:absolute;width:220px;height:220px;border:1px solid #ffffff1b;border-radius:50%;right:-90px;top:-80px;box-shadow:0 0 0 46px #ffffff08,0 0 0 95px #ffffff06}
+    .brand{font-family:Georgia,serif;font-weight:400;font-size:26px;letter-spacing:-.6px}.brand span{color:#f3b78f}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2.1px;color:#f4c6a1;margin-top:9px}.heading{font-size:24px;font-weight:700;margin:20px 0 5px}.subhead{font-size:14px;color:#d1d7de;margin:0;max-width:350px;line-height:1.5}
+    main{padding:16px}.screen{display:none;animation:appear .2s ease}.screen.active{display:block}@keyframes appear{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:none}}
+    .notice{background:#fdf4e9;color:#7b5941;font-size:12px;padding:12px 14px;border-radius:13px;line-height:1.45;margin-bottom:16px;border:1px solid #f1dfc9}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:7px 0 13px}.section-title h2{font-size:21px;margin:0}.tiny{font-size:12px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:17px;box-shadow:0 5px 25px #17283807}.card.full{grid-column:1/-1}.card strong{font-size:24px;letter-spacing:-.5px}.card-label{color:var(--muted);font-size:12px;margin-bottom:13px}.card-sub{font-size:12px;color:var(--muted);line-height:1.5;margin-top:5px}.iconbubble{background:#f9ede4;border-radius:13px;display:inline-grid;place-items:center;width:39px;height:39px;font-size:21px;margin-bottom:12px}
+    .progress{height:9px;background:#eceef0;border-radius:30px;overflow:hidden;margin:15px 0 10px}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e4ac87,#cc8658);border-radius:30px;transition:width .25s}
+    .primary{border:0;background:var(--navy);color:#fff;font-weight:600;padding:12px 16px;border-radius:14px}.secondary{border:1px solid #e9e1da;background:#fdf7f1;color:#ad744b;font-weight:600;padding:12px 14px;border-radius:14px}.ghost{border:1px solid var(--line);background:white;color:var(--ink);padding:11px 15px;border-radius:14px}.btnrow{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.btnrow button{flex:1}
+    .hero-card{background:linear-gradient(120deg,#f4e4d8,#fff8f2);border-color:#efd9c8;position:relative;overflow:hidden}.hero-card:after{content:"✦";position:absolute;right:21px;top:16px;color:#e4b18a;font-size:28px}.hero-card p{margin:5px 0;color:#705c50;font-size:13px;line-height:1.5}
+    .panel{background:#fff;border:1px solid var(--line);padding:18px;border-radius:var(--radius);margin-bottom:13px}.panel h3{margin:0 0 13px;font-size:16px}.metric{font-size:35px;font-weight:750;letter-spacing:-1px}.unit{font-size:15px;color:var(--muted);font-weight:400}
+    /* Дуа и ежедневная мотивация */
+    .daily-motto{font-size:21px;line-height:1.28;margin:9px 0 10px;font-weight:760;letter-spacing:-.45px}
+    .daily-tip{margin:0;color:#715b4d;font-size:13px;line-height:1.6;max-width:520px}
+    .faith-intro{margin:16px 0 11px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .faith-intro h3{font-size:18px;margin:0}.faith-intro span{font-size:11px;color:#947761}
+    .dua-card{background:linear-gradient(145deg,#ffffff,#fffaf4);border:1px solid #eadccd;border-radius:19px;padding:17px 16px;margin-bottom:12px}
+    .dua-title{color:#a57453;letter-spacing:1.35px;text-transform:uppercase;font-size:11px;font-weight:800}
+    .dua-arabic{font-family:"Geeza Pro","Noto Naskh Arabic","Amiri","Traditional Arabic",serif;direction:rtl;text-align:right;unicode-bidi:plaintext;font-size:25px;font-weight:500;line-height:2.05;color:#263d46;margin:12px 0}
+    .dua-reading{font-size:13px;line-height:1.7;color:#45566a;background:#f5f5f3;border-radius:12px;padding:10px 12px;margin:10px 0}
+    .dua-reading b{display:block;color:#9d6c50;font-size:11px;margin-bottom:4px}
+    .dua-translation{font-size:13px;line-height:1.65;color:#55575a;margin:10px 0 7px}
+    .dua-source{display:inline-block;color:#a16f4e;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+    .dua-note{font-size:11px;color:#80909b;line-height:1.6;margin:10px 0 2px}
+    .faith-quote{background:#eaf0ed;border:1px solid #dce8e1;border-radius:16px;padding:14px 15px;margin:14px 0 18px}
+    .faith-quote .quote-text{font-size:14px;line-height:1.6;color:#334b43;margin:6px 0}
+    .faith-quote a{font-size:11px;color:#5b8074;text-underline-offset:2px}
+    details.extra-dua{margin-top:12px;border-top:1px solid #eee5dc;padding-top:12px}
+    details.extra-dua summary{cursor:pointer;color:#a57453;font-size:13px;font-weight:700}
+    details.extra-dua .dua-arabic{font-size:23px}
+    @media(max-width:380px){.dua-arabic{font-size:23px}.daily-motto{font-size:19px}}
+
+    .field{display:grid;gap:6px;margin-bottom:11px}.field label{font-size:12px;color:#526371;font-weight:600}.field input,.field select,.field textarea{border:1px solid #e3e7e9;background:#fcfcfb;border-radius:12px;padding:12px 13px;width:100%;color:var(--ink);outline:none}.field textarea{min-height:80px;resize:vertical}.field input:focus,.field textarea:focus,.field select:focus{border-color:#dda077;box-shadow:0 0 0 3px #d88c5d1d}
+    .listrow{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #f0efed}.listrow:last-child{border-bottom:0}.listrow .detail{flex:1;min-width:0}.listrow .name{font-weight:650;word-wrap:break-word}.listrow .meta{font-size:12px;color:var(--muted);margin-top:4px}.check{width:23px;height:23px;accent-color:#b97a57}.delete{border:0;background:#faf1ef;color:#b56c61;border-radius:9px;padding:7px 9px}
+    .smallcaps{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#ac7957;font-weight:700}.success{color:#278161;font-size:13px;font-weight:600}.empty{padding:20px 0;color:#929da7;font-size:13px;text-align:center}
+    .glassrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:17px}.glass{background:#e7eef2;border-radius:10px;padding:10px;font-size:18px;opacity:.55}.glass.filled{background:#daecf7;opacity:1}
+    .chart{width:100%;height:165px;display:block}.recipe{border-radius:15px;background:#f9f7f4;padding:14px;margin-bottom:9px}.recipe b{display:block;font-size:14px}.recipe p{font-size:12px;color:var(--muted);line-height:1.5;margin:5px 0 0}
+    .tabs{position:fixed;bottom:0;left:0;right:0;z-index:3;display:flex;gap:2px;justify-content:space-around;background:#fff;box-shadow:0 -5px 35px #12243715;padding:8px max(7px,calc((100vw - 680px)/2)) calc(9px + env(safe-area-inset-bottom));border-top:1px solid var(--line);overflow-x:auto}
+    .tab{border:0;background:none;min-width:58px;max-width:100px;flex:1;padding:6px 3px;color:#7f8c95;border-radius:12px;display:grid;justify-items:center;gap:4px;font-size:10px;white-space:nowrap}.tab .symbol{font-size:20px}.tab.active{background:#fbf0e6;color:#ad734c;font-weight:750}
+    .toast{position:fixed;bottom:95px;left:50%;transform:translateX(-50%);background:#182d3e;color:#fff;border-radius:12px;padding:12px 18px;max-width:90vw;font-size:13px;z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}.toast.visible{opacity:1}
+    @media(max-width:360px){main{padding:12px}.card{padding:13px}.brand{font-size:24px}.tab{min-width:50px}.card strong{font-size:21px}}
+    /* Личные календари и дополнительные трекеры */
+    .calendar-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+    .calendar-heading h3{margin:0;font-size:16px;text-transform:capitalize}.cal-btn{background:#f8f4ed;border:1px solid #e6dacb;border-radius:9px;padding:6px 11px;color:#735949}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+    .day-name{font-size:10px;text-align:center;color:#92a0a8;padding-bottom:5px}
+    .cycle-day{min-width:0;height:38px;border-radius:10px;background:#f7f8f8;display:grid;place-items:center;font-size:12px;border:1px solid transparent;color:#44525f}
+    .cycle-day.other{opacity:.32}.cycle-day.logged{background:#ebbbbd;color:#6b3037;border-color:#e9a3ad;font-weight:800}
+    .cycle-day.predicted{border:1px dashed #d69aa5;background:#fbf0f1;color:#a16d73}.cycle-day.today{outline:2px solid #7893aa;outline-offset:1px}
+    .keyline{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:12px;font-size:11px;color:#77818a}
+    .keydot{display:inline-block;width:11px;height:11px;border-radius:4px;background:#ebbbbd;vertical-align:middle}.keydot.pred{background:#fbf0f1;border:1px dashed #d69aa5}
+    .mini-form-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.muted-note{font-size:12px;line-height:1.6;color:#79858e;margin:8px 0}
+    .quicklink{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #eae7e2;border-radius:12px;padding:13px 12px;margin:9px 0;text-decoration:none;color:inherit;background:#fbfaf7}
+    .quicklink .description{font-size:12px;color:var(--muted);margin-top:3px}.quicklink .arrow{color:#ae805e;font-size:22px}
+    .chip-row{display:flex;gap:6px;flex-wrap:wrap}.chip-row label{font-size:11px;padding:8px 9px;border:1px solid #eaded3;background:#fffaf7;border-radius:10px;display:flex;gap:4px;align-items:center}
+    .pill{display:inline-block;background:#fff4e9;color:#9b714f;font-size:11px;border-radius:99px;padding:5px 9px;margin:3px 4px 3px 0}
+    .summary-card{background:#f5eee7;padding:14px;border-radius:15px;line-height:1.6;font-size:13px}
+    @media(max-width:480px){.tabs{gap:0}.tab{min-width:45px;padding:6px 1px;font-size:9px}}
+    @media(max-width:400px){.calendar-grid{gap:3px}.cycle-day{height:35px}.mini-form-row{gap:7px}}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">My <span>Body</span> Diary <span>✧</span></div>
+    <div class="eyebrow">UMI SPORTIK · МОЙ ДНЕВНИК</div>
+    <h1 class="heading">Забота о себе — каждый день</h1>
+    <p class="subhead" id="dateLabel">Вода, уход, движение и небольшие победы.</p>
+  </header>
+  <main>
+    <div class="notice">🌷 Первая тестовая версия. Записи сохраняются только в этом браузере на этом устройстве. Пока нет синхронизации, личных аккаунтов и автоматических уведомлений.</div>
+    <section id="today" class="screen active">
+      <div class="section-title"><h2>Мой день</h2><span class="tiny" id="todayDate"></span></div>
+      <div class="grid">
+        <article class="card full hero-card"><div class="smallcaps">🌱 Твоя мысль на сегодня</div><h3 id="dailyMotto" class="daily-motto">Начни сегодня с одного маленького шага.</h3><p id="dailyTip" class="daily-tip">Постоянство важнее идеального дня.</p></article>
+        <article class="card full" style="padding:16px">
+          <div class="faith-intro"><h3>🤲 Дуа на каждый день</h3><span>Читай при открытии дневника</span></div>
+          <div class="dua-card">
+            <div class="dua-title">01 · Здоровье тела</div>
+            <div class="dua-arabic" lang="ar" dir="rtl">اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لَا إِلَٰهَ إِلَّا أَنْتَ.</div>
+            <div class="dua-reading"><b>Примерное чтение русскими буквами</b>Алла́хумма ‘а́фини фи́ бадани́. Алла́хумма ‘а́фини фи́ сам‘и́. Алла́хумма ‘а́фини фи́ басари́. Ля́ иля́ха илля́ А́нта.</div>
+            <p class="dua-translation"><b>Перевод:</b> О Аллах, даруй мне благополучие и здоровье в моём теле, сохрани мой слух и зрение. Нет божества, кроме Тебя.</p>
+            <a class="dua-source" href="https://sunnah.com/abudawud:5090" target="_blank" rel="noopener noreferrer">Источник: Сунан Абу Дауд, 5090 ↗</a>
+          </div>
+          <div class="dua-card">
+            <div class="dua-title">02 · Душевное спокойствие и стойкость</div>
+            <div class="dua-arabic" lang="ar" dir="rtl">اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْجُبْنِ وَالْبُخْلِ، وَضَلَعِ الدَّيْنِ، وَغَلَبَةِ الرِّجَالِ.</div>
+            <div class="dua-reading"><b>Примерное чтение русскими буквами</b>Алла́хумма инни́ а‘у́зу би́ка миналь-ха́мми валь-ха́зани, валь-‘а́джзи валь-ка́сали, валь-джу́бни валь-бу́хли, ва дала‘ид-да́йни, ва галабатир-риджа́ль.</div>
+            <p class="dua-translation"><b>Перевод:</b> О Аллах, прибегаю к Твоей защите от тревоги и печали, бессилия и лени, трусости и скупости, тяжести долгов и притеснения со стороны людей.</p>
+            <a class="dua-source" href="https://sunnah.com/bukhari:6369" target="_blank" rel="noopener noreferrer">Источник: Сахих аль-Бухари, 6369 ↗</a>
+            <details class="extra-dua"><summary>Ещё дуа — о руководстве и внутренней гармонии</summary>
+              <div class="dua-arabic" lang="ar" dir="rtl">اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى.</div>
+              <div class="dua-reading"><b>Примерное чтение русскими буквами</b>Алла́хумма инни́ ас’алю́каль-худа́ ват-тука́ валь-‘афа́фа валь-гына́.</div>
+              <p class="dua-translation"><b>Перевод:</b> О Аллах, прошу у Тебя верного руководства, богобоязненности, целомудрия и довольства необходимым.</p>
+              <a class="dua-source" href="https://sunnah.com/muslim:2721a" target="_blank" rel="noopener noreferrer">Источник: Сахих Муслим, 2721a ↗</a>
+            </details>
+          </div>
+          <p class="dua-note">Произношение русскими буквами приблизительное: для точного чтения важны звуки арабского языка. Дуа о здоровье и благополучии, не специальная молитва для снижения веса.</p>
+          <div class="faith-quote"><div class="smallcaps" id="faithCaption">Напоминание из Корана и Сунны</div><p class="quote-text" id="faithQuote"></p><a id="faithLink" target="_blank" rel="noopener noreferrer" href="https://sunnah.com/bukhari:6465">Посмотреть источник ↗</a></div>
+        </article>
+        <article class="card"><div class="iconbubble">💧</div><div class="card-label">Вода сегодня</div><strong id="homeWater">0 мл</strong><div class="card-sub" id="homeWaterSub">Цель: 2000 мл</div></article>
+        <article class="card"><div class="iconbubble">🧴</div><div class="card-label">Уход за кожей</div><strong id="homeSkin">0/0</strong><div class="card-sub">Шагов выполнено</div></article>
+        <article class="card"><div class="iconbubble">🏃‍♀️</div><div class="card-label">Активность</div><strong id="homeExercise">0 мин</strong><div class="card-sub">Отмечено сегодня</div></article>
+        <article class="card"><div class="iconbubble">⚖️</div><div class="card-label">Последний вес</div><strong id="homeWeight">—</strong><div class="card-sub">Мой дневник веса</div></article>
+        <article class="card"><div class="iconbubble">🌙</div><div class="card-label">Последний сон</div><strong id="homeSleep">—</strong><div class="card-sub">Режим сна и пробуждения</div></article>
+        <article class="card"><div class="iconbubble">🌷</div><div class="card-label">Женский календарь</div><strong id="homeCycle" style="font-size:17px">—</strong><div class="card-sub">Личный трекер цикла</div></article>
+      </div>
+      <div class="panel" style="margin-top:13px"><h3>🌙 Личные календари</h3><p class="card-sub" style="font-size:13px">Сон и подъём, месячные и заметки находятся в разделе «Ещё».</p><button type="button" class="secondary" id="openExtra">Открыть раздел «Ещё» →</button></div>
+      <div class="panel" style="margin-top:13px"><h3>⏰ Напоминания</h3><p class="card-sub" style="font-size:13px">Звуковые напоминания о воде, уходе и упражнениях добавим через Telegram-бота после подключения защищённого сервера. Сейчас они ещё не работают.</p></div>
+    </section>
+    <section id="water" class="screen">
+      <div class="section-title"><h2>💧 Трекер воды</h2><span class="tiny">Сегодня</span></div>
+      <div class="panel"><div class="card-label">Выпито</div><div class="metric"><span id="waterNow">0</span> <span class="unit">мл</span></div><div class="progress"><i id="waterBar"></i></div><div class="tiny" id="waterHint">0% от дневной цели</div><div class="glassrow" id="glasses"></div><div class="btnrow"><button class="ghost" id="waterMinus">− 250 мл</button><button class="primary" id="waterPlus">+ 250 мл</button></div></div>
+      <div class="panel"><h3>Дневная цель</h3><div class="field"><label for="waterGoal">Миллилитры в день</label><input id="waterGoal" type="number" min="250" max="6000" step="250" value="2000"></div><button class="secondary" id="saveWaterGoal">Сохранить цель</button><p class="card-sub">2000 мл — пример, а не персональная рекомендация. Установи подходящую тебе цель.</p></div>
+    </section>
+    <section id="skin" class="screen">
+      <div class="section-title"><h2>🧴 Мой skincare</h2><span class="tiny">Утро / вечер</span></div>
+      <div class="panel"><h3>Мои уходовые средства</h3><div id="skinList"></div></div>
+      <div class="panel"><h3>Добавить своё средство</h3><form id="skinForm"><div class="field"><label for="skinName">Название твоего средства</label><input id="skinName" maxlength="80" placeholder="Например, мягкий очищающий гель" required></div><div class="field"><label for="skinTime">Когда наносишь</label><select id="skinTime"><option value="Утро">Утро</option><option value="Вечер">Вечер</option><option value="Утро и вечер">Утро и вечер</option></select></div><div class="field"><label for="skinCategory">Тип средства</label><select id="skinCategory"><option value="Базовый уход">Базовый уход</option><option value="SPF">SPF</option><option value="Активное средство">Активное средство</option></select></div><div class="field"><label>Выбери дни недели для напоминания внутри списка (не отмечай активы ежедневно без согласованной схемы)</label><div class="chip-row" id="skinDayChoices"><label><input type="checkbox" value="1" checked>Пн</label><label><input type="checkbox" value="2" checked>Вт</label><label><input type="checkbox" value="3" checked>Ср</label><label><input type="checkbox" value="4" checked>Чт</label><label><input type="checkbox" value="5" checked>Пт</label><label><input type="checkbox" value="6" checked>Сб</label><label><input type="checkbox" value="0" checked>Вс</label></div></div><button class="primary" type="submit">Добавить в уход</button></form><p class="card-sub">Никакие старые средства не добавлены заранее. Пока ты сама указываешь расписание. После того как уточним названия и состав актуальных кремов, можно будет составить безопасную схему чередования.</p></div>
+    </section>
+    <section id="activity" class="screen">
+      <div class="section-title"><h2>🏃 Моя активность</h2><span class="tiny">Движение без давления</span></div>
+      <div class="panel"><div class="card-label">Движение сегодня</div><div class="metric"><span id="activityMinutes">0</span> <span class="unit">мин</span></div></div>
+      <div class="panel"><h3>Добавить активность</h3><form id="activityForm"><div class="field"><label for="activityKind">Вид активности</label><select id="activityKind"><option>Прогулка</option><option>Домашняя тренировка</option><option>Растяжка</option><option>Танцы</option><option>Другое</option></select></div><div class="field"><label for="activityLength">Продолжительность, минуты</label><input id="activityLength" type="number" min="1" max="600" value="15" required></div><button class="primary" type="submit">Отметить активность</button></form></div>
+      <div class="panel"><h3>🎬 Видео для домашних занятий</h3><p class="muted-note">Готовые ссылки на открытые тренировки NHS. По нажатию откроется видео на сайте источника. Это ещё не встроенный видеоплеер.</p>
+        <a class="quicklink" href="https://www.nhs.uk/live-well/exercise/strength-and-resistance/body-blast-warm-up/" target="_blank" rel="noopener noreferrer"><div>☀️ <b>Утренняя разминка</b><div class="description">Разогрев всего тела · около 5–10 мин</div></div><span class="arrow">↗</span></a>
+        <a class="quicklink" href="https://www.nhs.uk/live-well/exercise/strength-and-resistance/body-blast-cool-down/" target="_blank" rel="noopener noreferrer"><div>🧘 <b>Растяжка</b><div class="description">Спокойная растяжка и восстановление · 10 мин</div></div><span class="arrow">↗</span></a>
+        <a class="quicklink" href="https://www.nhs.uk/better-health/get-active/home-workout-videos/" target="_blank" rel="noopener noreferrer"><div>🔥 <b>Кардио умеренной интенсивности</b><div class="description">10-минутное кардио + силовая тренировка</div></div><span class="arrow">↗</span></a>
+        <a class="quicklink" href="https://www.nhs.uk/live-well/exercise/strength-and-flex-exercise-plan-how-to-videos/" target="_blank" rel="noopener noreferrer"><div>🧍‍♀️ <b>Осанка и гибкость</b><div class="description">Видео о правильной осанке и укреплении</div></div><span class="arrow">↗</span></a>
+        <div class="recipe"><b>🙂 Для лица</b><p>Добавим отдельные проверенные мягкие видео позже. Не обещаем «сжигание жира на лице» или омоложение упражнениями.</p></div><p class="muted-note">Начни с удобного уровня. При боли, головокружении или плохом самочувствии прекрати тренировку.</p></div>
+      <div class="panel"><h3>Сегодня уже сделано</h3><div id="activityList"></div></div>
+    </section>
+    <section id="weight" class="screen">
+      <div class="section-title"><h2>⚖️ Мой вес</h2><span class="tiny">Динамика</span></div>
+      <div class="panel"><h3>🧮 Мои параметры и расчёт калорий</h3><form id="profileForm"><div class="mini-form-row"><div class="field"><label for="profileAge">Возраст, лет</label><input id="profileAge" type="number" min="18" max="100" placeholder="Возраст" required></div><div class="field"><label for="profileHeight">Рост, см</label><input id="profileHeight" type="number" min="120" max="230" placeholder="Рост" required></div></div><div class="mini-form-row"><div class="field"><label for="profileWeight">Текущий вес, кг</label><input id="profileWeight" type="number" step="0.1" min="30" max="300" placeholder="Вес" required></div><div class="field"><label for="profileSex">Расчётная формула</label><select id="profileSex"><option value="female">Для женщины</option><option value="male">Для мужчины</option></select></div></div><div class="field"><label for="profileActivity">Примерный уровень активности</label><select id="profileActivity"><option value="1.2">Мало движения</option><option value="1.375">Небольшая активность</option><option value="1.55">Средняя активность</option><option value="1.725">Высокая активность</option></select></div><div class="field"><label><input type="checkbox" id="profileSpecial" style="width:auto;margin-right:8px">Беременность / грудное вскармливание / необходим особый медицинский план</label></div><button class="primary" type="submit">Рассчитать и сохранить</button></form><div id="profileResult" class="summary-card" style="margin-top:13px">Укажи параметры, чтобы получить ориентировочный расход энергии и персональную стартовую цель по воде.</div><button type="button" class="secondary" id="applyWaterFromProfile" style="margin-top:12px">Использовать расчётный ориентир воды</button><p class="muted-note">Расчёт Миффлина — Сан Жеора даёт приблизительную оценку для взрослых. Нельзя использовать цифры как медицинское назначение.</p></div>
+      <div class="panel"><h3>Мой график</h3><svg class="chart" id="weightChart" viewBox="0 0 350 165" aria-label="История веса" role="img"></svg><div class="tiny" id="weightChartNote"></div></div>
+      <div class="panel"><h3>Добавить измерение</h3><form id="weightForm"><div class="field"><label for="weightValue">Вес, кг</label><input id="weightValue" type="number" inputmode="decimal" min="20" max="400" step="0.1" placeholder="Например, 68.5" required></div><button class="primary" type="submit">Сохранить вес</button></form><p class="card-sub">Оценивай самочувствие и привычки, а не только цифры на весах.</p></div><div class="panel"><h3>История измерений</h3><div id="weightList"></div></div>
+    </section>
+    <section id="menu" class="screen">
+      <div class="section-title"><h2>🥗 Меню и питание</h2><span class="tiny">Идеи + дневник</span></div>
+      <div class="panel"><h3>Идеи на сегодня</h3><div class="recipe"><b>🍳 Завтрак · Омлет с овощами</b><p>Яйца, помидор, зелень, цельнозерновой хлеб.</p></div><div class="recipe"><b>🍲 Обед · Курица с гречкой</b><p>Курица, гречка и овощной салат.</p></div><div class="recipe"><b>🥑 Ужин · Рыба и овощи</b><p>Запечённая рыба, картофель и овощи.</p></div><p class="card-sub">Это примеры блюд, а не индивидуальное назначение.</p></div>
+      <div class="panel"><h3>🍅 Подбор блюд из моих продуктов — без ИИ</h3><div class="field"><label for="pantryInput">Какие продукты есть дома? Введи через запятую.</label><textarea id="pantryInput" rows="2" placeholder="Яйца, рис, курица, помидоры, творог..."></textarea></div><button class="secondary" type="button" id="pantryGenerate">Подобрать блюда</button><div id="pantryResults" style="margin-top:12px"></div><p class="muted-note">Это готовая библиотека рецептов. Приложение не придумывает неизвестные рецепты и не считает точные калории по одному названию блюда.</p></div>
+      <div class="panel"><h3>Что я ела сегодня</h3><form id="foodForm"><div class="field"><label for="foodName">Блюдо или заметка</label><input id="foodName" maxlength="120" placeholder="Например, овсянка с ягодами" required></div><button class="primary" type="submit">Добавить запись</button></form><div id="foodList" style="margin-top:13px"></div></div>
+    </section>
+    <section id="extra" class="screen">
+      <div class="section-title"><h2>✨ Дополнительно</h2><span class="tiny">Личные записи</span></div>
+      <div class="panel"><h3>🌙 Сон и пробуждение</h3><p class="muted-note">Здесь ты записываешь время сна и пробуждения самостоятельно. Приложение не измеряет сон автоматически и пока не присылает сигналы.</p>
+        <form id="sleepForm"><div class="field"><label for="sleepDate">Дата пробуждения (утро после ночного сна)</label><input id="sleepDate" type="date" required></div><div class="mini-form-row"><div class="field"><label for="bedTime">Легла спать</label><input id="bedTime" type="time" value="23:00" required></div><div class="field"><label for="wakeTime">Проснулась</label><input id="wakeTime" type="time" value="07:00" required></div></div><div class="field"><label for="sleepQuality">Как спалось?</label><select id="sleepQuality"><option value="Хорошо">Хорошо</option><option value="Нормально">Нормально</option><option value="Плохо">Плохо</option></select></div><button class="primary" type="submit">Сохранить ночь</button></form>
+        <div id="sleepOverview" class="summary-card" style="margin-top:14px">Пока нет записей сна.</div><div id="sleepHistory"></div>
+      </div>
+      <div class="panel"><h3>⏰ Мой желаемый режим</h3><div class="mini-form-row"><div class="field"><label for="targetBed">Ложиться</label><input id="targetBed" type="time" value="23:00"></div><div class="field"><label for="targetWake">Просыпаться</label><input id="targetWake" type="time" value="07:00"></div></div><button id="saveSleepTarget" class="secondary" type="button">Сохранить расписание</button><p id="sleepTargetAdvice" class="muted-note">Сдвигай время сна постепенно на 15–30 минут и старайся вставать примерно в одно время. Это напоминание на экране, не будильник.</p></div>
+      <div class="panel"><h3>🌷 Календарь месячных</h3><form id="cycleForm"><div class="field"><label for="periodStart">Первый день последних месячных</label><input id="periodStart" type="date" required></div><div class="mini-form-row"><div class="field"><label for="periodDays">Продолжительность, дни</label><input id="periodDays" type="number" min="1" max="10" value="5" required></div><div class="field"><label for="cycleLength">Обычная длина цикла, дни</label><input id="cycleLength" type="number" min="21" max="45" value="28" required></div></div><button class="primary" type="submit">Записать менструацию</button></form>
+        <p class="muted-note">Отмечай фактические даты. Светлые дни в календаре — только приблизительный прогноз следующих месячных, не инструмент контрацепции или определения фертильных дней.</p>
+        <div class="calendar-heading" style="margin-top:18px"><button class="cal-btn" type="button" id="cyclePrev" aria-label="Прошлый месяц">‹</button><h3 id="calendarMonth"></h3><button class="cal-btn" type="button" id="cycleNext" aria-label="Следующий месяц">›</button></div>
+        <div id="periodCalendar" class="calendar-grid"></div><div class="keyline"><span><i class="keydot"></i> Записанные дни</span><span><i class="keydot pred"></i> Приблизительный прогноз</span></div>
+        <div id="cycleOverview" class="summary-card" style="margin-top:14px">Запиши дату начала, чтобы увидеть календарь.</div><div id="cycleHistory"></div>
+      </div>
+      <div class="panel"><h3>📝 Мои личные заметки</h3><form id="notesForm"><div class="field"><label for="noteTopic">Категория</label><select id="noteTopic"><option>Общее</option><option>Самочувствие</option><option>Сон</option><option>Цикл</option><option>Кожа</option><option>Питание</option></select></div><div class="field"><label for="noteTitle">Заголовок</label><input id="noteTitle" maxlength="90" placeholder="Например, Как я себя сегодня чувствую" required></div><div class="field"><label for="noteText">Текст</label><textarea id="noteText" rows="4" maxlength="1600" placeholder="Запиши мысли, наблюдения, самочувствие..." required></textarea></div><button class="primary" type="submit">Сохранить заметку</button></form><div id="notesList" style="margin-top:15px"></div></div>
+      <div class="panel"><h3>🔐 Конфиденциальность и резервная копия</h3><p class="muted-note">В этой тестовой версии сон, даты месячных, заметки и другие записи хранятся локально в браузере на этом устройстве. Здесь ещё нет отдельных аккаунтов, защищённого облака и синхронизации. Не передавай этот телефон разблокированным посторонним и не открывай трекер на чужих устройствах.</p><button id="backupData" class="secondary" type="button">Сохранить резервную копию JSON</button><p class="muted-note">Файл содержит личные сведения, включая данные о цикле. Храни его приватно.</p></div>
+    </section>
+  </main>
+</div>
+<nav class="tabs" aria-label="Разделы приложения">
+  <button class="tab active" data-screen="today"><span class="symbol">🏠</span>Сегодня</button>
+  <button class="tab" data-screen="water"><span class="symbol">💧</span>Вода</button>
+  <button class="tab" data-screen="skin"><span class="symbol">🧴</span>Уход</button>
+  <button class="tab" data-screen="activity"><span class="symbol">🏃</span>Спорт</button>
+  <button class="tab" data-screen="weight"><span class="symbol">⚖️</span>Вес</button>
+  <button class="tab" data-screen="menu"><span class="symbol">🥗</span>Меню</button>
+  <button class="tab" data-screen="extra"><span class="symbol">🌙</span>Ещё</button>
+</nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){
+  'use strict';
+  const storageKey='my-body-diary-demo-v1';
+  const todayKey=()=>{const n=new Date();return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`};
+  const defaultData=()=>({goal:2000,water:{},skin:[],skinChecks:{},activity:[],weights:[],foods:[],sleep:[],sleepTarget:{bed:'23:00',wake:'07:00'},periods:[],cycleLength:28,notes:[],profile:null,pantry:''});
+  let data;try {data={...defaultData(),...(JSON.parse(localStorage.getItem(storageKey))||{})}}catch(_){data=defaultData()}
+  const $=id=>document.getElementById(id);
+  const save=()=>{try{localStorage.setItem(storageKey,JSON.stringify(data))}catch(_){notify('Не удалось сохранить запись в этом браузере')}};
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const number=n=>Number.isFinite(Number(n))?Number(n):0;
+  let toastTimeout;
+  const notify=message=>{const el=$('toast');el.textContent=message;el.classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>el.classList.remove('visible'),2400)};
+  const safeId=()=>Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+  const today=todayKey();
+  const parseDate=iso=>new Date(iso+'T12:00:00');
+  const plusDays=(iso,days)=>{const d=parseDate(iso);d.setDate(d.getDate()+days);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+  const dateISO=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const minutesFromClock=v=>{const parts=String(v).split(':').map(Number);return parts.length===2&&parts.every(Number.isFinite)?parts[0]*60+parts[1]:NaN};
+  const fmtDate=(iso)=>{const [y,m,d]=iso.split('-');return `${d}.${m}.${y}`};
+  const formatNum=n=>Number(n).toLocaleString('ru-RU',{maximumFractionDigits:1});
+  // Напоминания меняются по календарной дате, без ИИ и без передачи данных в сеть.
+  const dailyMessages=[
+    ['Маленький шаг сегодня важнее идеального плана завтра.','Пять минут прогулки, стакан воды или вечерний уход — выбери одно действие и начни.'],
+    ['Пропустила день? Вернись сегодня.','Один пропуск не отменяет твой путь. Продолжай с того места, где остановилась.'],
+    ['Постоянство сильнее кратковременного вдохновения.','Сделай сегодня хотя бы минимальную часть — это тоже поддерживает привычку.'],
+    ['Не жди настроения, начни с простого.','Сначала небольшой шаг, а желание действовать может прийти уже в процессе.'],
+    ['Не стремись к идеалу — стремись к регулярности.','Настоящий прогресс складывается из обычных, повторяющихся действий.'],
+    ['Береги своё тело: оно заслуживает заботы.','Не наказывай себя пропуском еды или изнурительной тренировкой. Выбирай разумный ритм.'],
+    ['Десять минут сегодня — уже начало.','Пусть сегодняшняя задача будет маленькой, но выполнимой.'],
+    ['Результат создаётся не за один день.','Важно то, что ты повторяешь неделями, а не отдельный удачный день.'],
+    ['Сохраняй привычку, даже когда занята.','Если не получается всё, выполни одно самое важное действие.'],
+    ['Не обнуляй свой труд из-за ошибки.','Каждое возвращение к полезным привычкам — это проявление стойкости.'],
+    ['Сегодня ты выбираешь пользу для будущей себя.','Небольшая прогулка, полноценная еда и отдых тоже работают на здоровье.'],
+    ['Дисциплина — это забота, а не наказание.','Иди в своём темпе. Последовательность не требует крайностей.'],
+    ['Начни с того, что можешь сделать сейчас.','Даже спокойная растяжка или уход перед сном имеют значение.'],
+    ['Пусть полезное станет привычным.','Не нужно делать всё идеально: достаточно повторять посильное.']
+  ];
+  const faithMessages=[
+    {caption:'Хадис · постоянство',quote:'«Самые любимые дела — те, что совершаются постоянно, даже если их мало».',source:'Сахих аль-Бухари, 6465',url:'https://sunnah.com/bukhari:6465'},
+    {caption:'Хадис · полезные усилия',quote:'«Стремись к тому, что приносит тебе пользу, проси помощи у Аллаха и не проявляй бессилия».',source:'Сахих Муслим, 2664',url:'https://sunnah.com/muslim:2664'},
+    {caption:'Коран · умеренность',quote:'«Ешьте и пейте, но не излишествуйте».',source:'Коран, 7:31 (аль-А‘раф)',url:'https://quran.com/7/31'}
+  ];
+  const dayNumber=Math.floor(new Date(today+'T12:00:00').getTime()/86400000);
+  const [dailyHeading,dailyDescription]=dailyMessages[((dayNumber%dailyMessages.length)+dailyMessages.length)%dailyMessages.length];
+  $('dailyMotto').textContent=dailyHeading;
+  $('dailyTip').textContent=dailyDescription;
+  const faith=faithMessages[((dayNumber%faithMessages.length)+faithMessages.length)%faithMessages.length];
+  $('faithCaption').textContent=faith.caption;
+  $('faithQuote').textContent=faith.quote;
+  $('faithLink').textContent='Источник: '+faith.source+' ↗';
+  $('faithLink').href=faith.url;
+
+  $('dateLabel').textContent=new Date().toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'})+' · твой личный трекер';
+  $('todayDate').textContent=new Date().toLocaleDateString('ru-RU',{day:'numeric',month:'short'});
+  if(window.Telegram?.WebApp){try{window.Telegram.WebApp.ready();window.Telegram.WebApp.expand()}catch(_){}}
+  document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b===btn));
+    document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===btn.dataset.screen));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+  $('openExtra').addEventListener('click',()=>document.querySelector('.tab[data-screen="extra"]').click());
+  const getWater=()=>Math.max(0,number(data.water?.[today]));
+  function renderWater(){
+    const v=getWater(),goal=Math.max(250,number(data.goal)||2000),p=Math.round(100*v/goal);
+    $('homeWater').textContent=formatNum(v)+' мл';$('homeWaterSub').textContent='Цель: '+formatNum(goal)+' мл';
+    $('waterNow').textContent=formatNum(v);$('waterGoal').value=goal;$('waterBar').style.width=Math.min(100,p)+'%';
+    $('waterHint').textContent=p+'% от дневной цели';
+    $('glasses').innerHTML=Array.from({length:Math.max(1,Math.min(12,Math.ceil(goal/250)))},(_,i)=>`<span class="glass ${i*250<v?'filled':''}" aria-label="${i*250<v?'Выпито':'Не выпито'}">💧</span>`).join('');
+  }
+  $('waterPlus').addEventListener('click',()=>{data.water[today]=Math.min(20000,getWater()+250);save();renderAll();notify('+250 мл воды 💧')});
+  $('waterMinus').addEventListener('click',()=>{data.water[today]=Math.max(0,getWater()-250);save();renderAll()});
+  $('saveWaterGoal').addEventListener('click',()=>{const v=Number($('waterGoal').value);if(!Number.isFinite(v)||v<250||v>6000){notify('Укажи цель от 250 до 6000 мл');return}data.goal=v;save();renderAll();notify('Цель сохранена')});
+  const skinScheduled=item=>!Array.isArray(item.days)||item.days.includes(new Date(today+'T12:00:00').getDay());
+  function skinDoneCount(){return (data.skin||[]).filter(s=>skinScheduled(s)&&Boolean(data.skinChecks[today+'_'+s.id])).length}
+  function renderSkin(){
+    const list=$('skinList');list.innerHTML='';
+    const items=(Array.isArray(data.skin)?data.skin:[]).filter(skinScheduled);
+    if(!items.length){list.innerHTML='<div class="empty">На сегодня средств в расписании нет. Ты можешь добавить их ниже.</div>'}
+    items.forEach(item=>{
+      const row=document.createElement('div');row.className='listrow';
+      const key=today+'_'+item.id;
+      const desc=[item.time,item.category||'',item.days?'по расписанию':'ежедневно'].filter(Boolean).join(' · ');
+      row.innerHTML=`<input class="check" type="checkbox" aria-label="Отметить уход" ${data.skinChecks[key]?'checked':''}><div class="detail"><div class="name">${esc(item.name)}</div><div class="meta">${esc(desc)}</div></div><button class="delete" aria-label="Удалить средство">✕</button>`;
+      row.querySelector('input').addEventListener('change',e=>{data.skinChecks[key]=e.target.checked;save();renderAll()});
+      row.querySelector('button').addEventListener('click',()=>{if(!confirm('Убрать средство из расписания?'))return;data.skin=data.skin.filter(x=>x.id!==item.id);save();renderAll()});
+      list.appendChild(row);
+    });
+    $('homeSkin').textContent=skinDoneCount()+'/'+items.length;
+  }
+  $('skinForm').addEventListener('submit',e=>{e.preventDefault();const name=$('skinName').value.trim();if(!name)return;
+    const days=Array.from(document.querySelectorAll('#skinDayChoices input:checked')).map(x=>Number(x.value));
+    if(!days.length){notify('Выбери хотя бы один день ухода');return}
+    data.skin.push({id:safeId(),name:name.slice(0,80),time:$('skinTime').value,category:$('skinCategory').value,days});$('skinName').value='';save();renderAll();notify('Средство добавлено 🧴');
+  });
+  function activitiesToday(){return (data.activity||[]).filter(e=>e.date===today)}
+  function renderActivity(){
+    const acts=activitiesToday(),mins=acts.reduce((sum,a)=>sum+number(a.minutes),0);
+    $('activityMinutes').textContent=formatNum(mins);$('homeExercise').textContent=formatNum(mins)+' мин';
+    $('activityList').innerHTML=acts.length?acts.slice().reverse().map(a=>`<div class="listrow"><div class="detail"><div class="name">${esc(a.kind)}</div><div class="meta">${number(a.minutes)} мин</div></div></div>`).join(''):'<div class="empty">Сегодня активность ещё не отмечена.</div>';
+  }
+  $('activityForm').addEventListener('submit',e=>{e.preventDefault();const minutes=Number($('activityLength').value);if(!Number.isFinite(minutes)||minutes<1||minutes>600){notify('Укажи от 1 до 600 минут');return}
+    data.activity.push({id:safeId(),date:today,kind:$('activityKind').value,minutes});save();renderAll();notify('Активность записана 🏃')
+  });
+  function renderWeights(){
+    const arr=(data.weights||[]).slice().sort((a,b)=>a.date.localeCompare(b.date));
+    const last=arr[arr.length-1];$('homeWeight').textContent=last?formatNum(last.weight)+' кг':'—';
+    $('weightList').innerHTML=arr.length?arr.slice().reverse().slice(0,25).map(w=>`<div class="listrow"><div class="detail"><div class="name">${formatNum(w.weight)} кг</div><div class="meta">${fmtDate(w.date)}</div></div></div>`).join(''):'<div class="empty">Добавь первое измерение, чтобы увидеть график.</div>';
+    const svg=$('weightChart');svg.innerHTML='';
+    if(!arr.length){$('weightChartNote').textContent='Пока нет измерений';return}
+    const vals=arr.slice(-12),lo=Math.min(...vals.map(x=>number(x.weight)))-1,hi=Math.max(...vals.map(x=>number(x.weight)))+1;
+    const points=vals.map((w,i)=>{const x=26+(vals.length===1?149:(i*298/(vals.length-1)));const y=130-(number(w.weight)-lo)/(hi-lo)*103;return {x,y}});
+    const lines=['<line x1="26" y1="130" x2="324" y2="130" stroke="#e7e8e8"/>','<line x1="26" y1="27" x2="324" y2="27" stroke="#eef0f0"/>'];
+    if(points.length>1)lines.push(`<polyline points="${points.map(p=>p.x+','+p.y).join(' ')}" fill="none" stroke="#cc8658" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>`);
+    points.forEach(p=>lines.push(`<circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#cc8658" stroke="white" stroke-width="2"/>`));
+    lines.push(`<text x="26" y="16" fill="#91a0a9" font-size="10">${formatNum(hi)} кг</text>`);
+    lines.push(`<text x="26" y="150" fill="#91a0a9" font-size="10">${formatNum(lo)} кг</text>`);
+    svg.innerHTML=lines.join('');$('weightChartNote').textContent=`Измерений: ${arr.length} · последние ${vals.length} на графике`;
+  }
+  $('weightForm').addEventListener('submit',e=>{e.preventDefault();const v=Number($('weightValue').value);if(!Number.isFinite(v)||v<20||v>400){notify('Проверь значение веса');return}
+    const existing=data.weights.find(w=>w.date===today);if(existing)existing.weight=v;else data.weights.push({date:today,weight:v});if(data.profile)data.profile.weight=v;$('weightValue').value='';save();renderAll();notify('Вес сохранён ⚖️');
+  });
+  function renderFoods(){const list=(data.foods||[]).filter(x=>x.date===today);$('foodList').innerHTML=list.length?list.slice().reverse().map(x=>`<div class="listrow"><div class="detail"><div class="name">${esc(x.name)}</div></div></div>`).join(''):'<div class="empty">Сегодня записей пока нет.</div>'}
+  $('foodForm').addEventListener('submit',e=>{e.preventDefault();const name=$('foodName').value.trim();if(!name)return;data.foods.push({date:today,name:name.slice(0,120)});$('foodName').value='';save();renderAll();notify('Запись добавлена 🥗')});
+  // Sleep tracker: waking date refers to the morning after the night.
+  function renderSleep(){
+    const arr=(Array.isArray(data.sleep)?data.sleep:[]).slice().sort((a,b)=>a.date.localeCompare(b.date));
+    const latest=arr[arr.length-1];$('homeSleep').textContent=latest?formatNum(latest.hours)+' ч':'—';
+    $('sleepOverview').textContent=arr.length?'Последняя ночь: '+formatNum(latest.hours)+' ч · '+latest.quality+'. Среднее за последние '+Math.min(7,arr.length)+' записей: '+formatNum(arr.slice(-7).reduce((s,x)=>s+Number(x.hours),0)/Math.min(7,arr.length))+' ч.':'Запиши первую ночь, чтобы увидеть динамику сна.';
+    $('sleepHistory').innerHTML=arr.length?arr.slice(-7).reverse().map(x=>`<div class="listrow"><div class="detail"><div class="name">${fmtDate(x.date)} · ${formatNum(x.hours)} ч</div><div class="meta">${esc(x.bed)} → ${esc(x.wake)} · ${esc(x.quality)}</div></div></div>`).join(''):'<div class="empty">Истории сна пока нет.</div>';
+    const tar=data.sleepTarget||{bed:'23:00',wake:'07:00'};$('targetBed').value=tar.bed;$('targetWake').value=tar.wake;
+  }
+  $('sleepDate').value=today;
+  $('sleepForm').addEventListener('submit',e=>{e.preventDefault();const date=$('sleepDate').value,bed=$('bedTime').value,wake=$('wakeTime').value;
+    if(!date||date>today){notify('Выбери дату пробуждения не позже сегодняшней');return}
+    let len=minutesFromClock(wake)-minutesFromClock(bed);if(len<=0)len+=1440;
+    if(!Number.isFinite(len)||len<120||len>960){notify('Проверь время: обычно от 2 до 16 часов');return}
+    const entry={date,bed,wake,quality:$('sleepQuality').value,hours:Math.round(len/6)/10};data.sleep=Array.isArray(data.sleep)?data.sleep:[];
+    const found=data.sleep.findIndex(x=>x.date===date);if(found>=0)data.sleep[found]=entry;else data.sleep.push(entry);
+    save();renderAll();notify('Ночь сохранена 🌙');
+  });
+  $('saveSleepTarget').addEventListener('click',()=>{const bed=$('targetBed').value,wake=$('targetWake').value;if(!bed||!wake){notify('Укажи оба времени');return}data.sleepTarget={bed,wake};save();renderAll();notify('Желаемый режим сохранён')});
+
+  // Cycle tracker: estimated days never represent certainty or fertility.
+  let calendarView=new Date();calendarView.setDate(1);
+  function renderCycle(){
+    const periods=(Array.isArray(data.periods)?data.periods:[]).slice().sort((a,b)=>a.start.localeCompare(b.start));
+    const latest=periods[periods.length-1],length=Number(data.cycleLength)||28;
+    $('cycleLength').value=length;
+    $('homeCycle').textContent=latest?'с '+fmtDate(latest.start):'—';
+    const prediction=latest?plusDays(latest.start,length):null;
+    $('cycleOverview').textContent=latest?`Последнее отмеченное начало: ${fmtDate(latest.start)}. Обычная длина цикла: ${length} дней. Следующее начало по приблизительному расчёту: ${fmtDate(prediction)}. Реальная дата может отличаться.`:'Запиши первый день последних месячных. Прогноз появится после добавления записи.';
+    $('cycleHistory').innerHTML=periods.length?periods.slice().reverse().slice(0,8).map(p=>`<div class="listrow"><div class="detail"><div class="name">${fmtDate(p.start)}</div><div class="meta">${Number(p.days)} дн. · фактическая запись</div></div><button class="delete" type="button" data-period="${esc(p.start)}" aria-label="Удалить запись">✕</button></div>`).join(''):'<div class="empty">Записей пока нет.</div>';
+    $('cycleHistory').querySelectorAll('button[data-period]').forEach(btn=>btn.addEventListener('click',()=>{if(!confirm('Удалить эту запись о месячных?'))return;data.periods=data.periods.filter(p=>p.start!==btn.dataset.period);save();renderAll()}));
+    const year=calendarView.getFullYear(),month=calendarView.getMonth();
+    $('calendarMonth').textContent=calendarView.toLocaleDateString('ru-RU',{month:'long',year:'numeric'});
+    const actual=new Set(),estimated=new Set();
+    periods.forEach(p=>{for(let i=0;i<Math.min(10,Number(p.days)||0);i++)actual.add(plusDays(p.start,i))});
+    if(latest){for(let n=1;n<=6;n++){const guess=plusDays(latest.start,length*n);for(let j=0;j<Math.min(10,Number(latest.days)||5);j++)estimated.add(plusDays(guess,j))}}
+    const offset=(new Date(year,month,1).getDay()+6)%7;
+    const daysInMonth=new Date(year,month+1,0).getDate();const cells=Math.ceil((offset+daysInMonth)/7)*7;
+    const calendar=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(x=>`<span class="day-name">${x}</span>`);
+    for(let i=0;i<cells;i++){
+      const d=new Date(year,month,1-offset+i,12);const iso=dateISO(d);
+      const cls=['cycle-day'];if(d.getMonth()!==month)cls.push('other');
+      if(actual.has(iso))cls.push('logged');else if(estimated.has(iso))cls.push('predicted');
+      if(iso===today)cls.push('today');calendar.push(`<div class="${cls.join(' ')}" aria-label="${fmtDate(iso)}">${d.getDate()}</div>`);
+    }
+    $('periodCalendar').innerHTML=calendar.join('');
+  }
+  $('periodStart').value=today;
+  $('cyclePrev').addEventListener('click',()=>{calendarView.setMonth(calendarView.getMonth()-1);renderCycle()});
+  $('cycleNext').addEventListener('click',()=>{calendarView.setMonth(calendarView.getMonth()+1);renderCycle()});
+  $('cycleForm').addEventListener('submit',e=>{e.preventDefault();const start=$('periodStart').value,days=Number($('periodDays').value),length=Number($('cycleLength').value);
+    if(!start||start>today||days<1||days>10||length<21||length>45){notify('Проверь даты и длительность цикла');return}
+    data.periods=Array.isArray(data.periods)?data.periods:[];data.cycleLength=length;
+    const idx=data.periods.findIndex(p=>p.start===start);const rec={start,days};if(idx>=0)data.periods[idx]=rec;else data.periods.push(rec);
+    calendarView=parseDate(start);calendarView.setDate(1);save();renderAll();notify('Дата сохранена 🌷');
+  });
+
+  function renderNotes(){
+    const notes=Array.isArray(data.notes)?data.notes:[];
+    $('notesList').innerHTML=notes.length?notes.slice().reverse().map(n=>`<div class="listrow"><div class="detail"><div class="name">${esc(n.title)}</div><div class="meta">${esc(n.category)} · ${fmtDate(n.date)}</div><p style="font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere">${esc(n.text)}</p></div><button class="delete" data-note="${esc(n.id)}" aria-label="Удалить заметку">✕</button></div>`).join(''):'<div class="empty">Заметок пока нет.</div>';
+    $('notesList').querySelectorAll('button[data-note]').forEach(b=>b.addEventListener('click',()=>{if(!confirm('Удалить заметку?'))return;data.notes=data.notes.filter(n=>n.id!==b.dataset.note);save();renderAll()}));
+  }
+  $('notesForm').addEventListener('submit',e=>{e.preventDefault();const title=$('noteTitle').value.trim(),body=$('noteText').value.trim();if(!title||!body)return;
+    data.notes=Array.isArray(data.notes)?data.notes:[];data.notes.push({id:safeId(),date:today,title:title.slice(0,90),text:body.slice(0,1600),category:$('noteTopic').value});
+    $('noteTitle').value='';$('noteText').value='';save();renderAll();notify('Заметка сохранена 📝');
+  });
+
+  function renderProfile(){
+    if(!data.profile)return;
+    const x=data.profile;for(const [id,val] of [['profileAge',x.age],['profileHeight',x.height],['profileWeight',x.weight],['profileSex',x.sex],['profileActivity',x.activity]])$(id).value=val;
+    $('profileSpecial').checked=Boolean(x.special);
+    const bmr=10*x.weight+6.25*x.height-5*x.age+(x.sex==='male'?5:-161);
+    const maintenance=Math.round(bmr*x.activity);
+    const water=Math.round(x.weight*30/50)*50;
+    const lowerLimit=x.sex==='male'?1500:1200;
+    const targetText=maintenance<=lowerLimit+300?'При такой оценке расхода не стоит автоматически назначать дефицит: сначала уточни цель и потребности индивидуально.':`Примерный диапазон для умеренного дефицита: ${Math.max(lowerLimit,maintenance-400)}–${Math.max(lowerLimit,maintenance-250)} ккал/сутки (нужна индивидуальная проверка)`;
+    $('profileResult').innerHTML=x.special?`<b>Мои данные сохранены.</b><div>Обычный расчёт калорий для похудения не подходит при беременности, кормлении грудью или необходимости медицинской диеты. Цели лучше уточнить с врачом.</div>`:`<b>Ориентир для взрослого</b><div>ИМТ: ${(x.weight/(x.height/100)**2).toFixed(1)}</div><div>В покое: около ${Math.round(bmr)} ккал/сутки</div><div>Для поддержания: примерно ${maintenance} ккал/сутки</div><div>${targetText}</div><div>Питьевая вода: около ${water} мл как <em>стартовая настраиваемая цель</em>, не строгая медицинская норма.</div>`;
+  }
+  $('profileForm').addEventListener('submit',e=>{e.preventDefault();const age=Number($('profileAge').value),height=Number($('profileHeight').value),weight=Number($('profileWeight').value),activity=Number($('profileActivity').value);
+    if(age<18||age>100||height<120||height>230||weight<30||weight>300||!Number.isFinite(activity)){notify('Проверь возраст, рост и вес');return}
+    data.profile={age,height,weight,activity,sex:$('profileSex').value,special:$('profileSpecial').checked};
+    save();renderAll();notify('Параметры сохранены');
+  });
+  $('applyWaterFromProfile').addEventListener('click',()=>{
+    if(!data.profile){notify('Сначала сохрани рост и вес');return}
+    if(data.profile.special){notify('При особых состояниях уточни цель воды с врачом');return}
+    data.goal=Math.round(data.profile.weight*30/50)*50;save();renderAll();notify('Ориентир воды установлен — его можно изменить');
+  });
+
+  const pantryRecipes=[
+    {name:'Омлет с помидорами',items:['яйца','помидоры'],how:'Смешай яйца, добавь помидоры и приготовь на сковороде с небольшим количеством масла.'},
+    {name:'Гречка с курицей',items:['гречка','курица'],how:'Отвари крупу, курицу приготовь до готовности и добавь овощи по вкусу.'},
+    {name:'Рис с курицей и овощами',items:['рис','курица'],how:'Приготовь рис, курицу и любые овощи, соедини.'},
+    {name:'Творог с фруктами',items:['творог','яблоки'],how:'Нарежь яблоко и смешай с творогом.'},
+    {name:'Овсянка с бананом',items:['овсянка','банан'],how:'Свари овсянку на воде или молоке, добавь банан.'},
+    {name:'Салат с огурцами и помидорами',items:['огурцы','помидоры'],how:'Нарежь овощи, добавь зелень и немного масла.'},
+    {name:'Картофель с яйцом',items:['картофель','яйца'],how:'Отвари картофель и яйца, подай с овощами.'},
+    {name:'Овощной суп',items:['картофель','морковь','лук'],how:'Нарежь овощи и отвари до мягкости, посоли по вкусу.'}
+  ];
+  $('pantryInput').value=data.pantry||'';
+  $('pantryGenerate').addEventListener('click',()=>{const raw=$('pantryInput').value.toLocaleLowerCase('ru-RU').split(/[,\n;]/).map(x=>x.trim()).filter(Boolean);data.pantry=$('pantryInput').value.slice(0,800);save();
+    if(!raw.length){$('pantryResults').innerHTML='<div class="empty">Сначала введи свои продукты через запятую.</div>';return}
+    const aliases={'яйцо':'яйца','помидор':'помидоры','огурец':'огурцы','картошка':'картофель','картофеля':'картофель','яйца':'яйца','бананы':'банан','яблоко':'яблоки','морковка':'морковь','овсяные хлопья':'овсянка','куриная грудка':'курица'};
+    const have=new Set(raw.map(x=>aliases[x]||x));const score=pantryRecipes.map(r=>({...r,missing:r.items.filter(i=>!have.has(i))})).sort((a,b)=>a.missing.length-b.missing.length).slice(0,6);
+    $('pantryResults').innerHTML=score.map(r=>`<div class="recipe"><b>${esc(r.name)} ${r.missing.length===0?'✅':''}</b><p>${esc(r.how)}</p><p>${r.missing.length?'Не хватает: '+esc(r.missing.join(', ')):'Все основные ингредиенты есть.'}</p></div>`).join('');notify('Подобраны идеи блюд');
+  });
+  $('backupData').addEventListener('click',()=>{
+    try{const blob=new Blob([JSON.stringify({format:'MBD-v1',exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='my-body-diary-backup-'+today+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);notify('Резервная копия сформирована')}catch(_){notify('Не удалось создать резервную копию')}
+  });
+  function renderAll(){renderWater();renderSkin();renderActivity();renderWeights();renderFoods();renderSleep();renderCycle();renderNotes();renderProfile()}
+  renderAll();
+})();
+</script>
+</body>
+</html>
